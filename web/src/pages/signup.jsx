@@ -27,37 +27,30 @@ const PhoneIcon = () => (
   </svg>
 );
 
-
-const InputField = ({ label, id, type = "text", placeholder, value, onChange, icon, rightElement, error }) => (
+// InputField Component
+const InputField = ({ label, id, type = "text", placeholder, value, onChange, icon, rightElement, error, max }) => (
   <div className="flex flex-col gap-1.5">
     <label htmlFor={id} className="text-sm font-semibold text-gray-700">{label}</label>
     <div className="relative">
-      {icon && (
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-          {icon}
-        </div>
-      )}
+      {icon && <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">{icon}</div>}
       <input
         id={id}
         type={type}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        max={max}
         className={`w-full pl-10 pr-10 py-2 rounded border text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400 ${
           error ? "border-red-400" : "border-gray-300 hover:border-gray-400"
         }`}
       />
-      {rightElement && (
-        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-          {rightElement}
-        </div>
-      )}
+      {rightElement && <div className="absolute inset-y-0 right-0 pr-3 flex items-center">{rightElement}</div>}
     </div>
     {error && <p className="text-xs text-red-500">{error}</p>}
   </div>
 );
 
-// Password strength indicator
+// PasswordStrength Component
 const PasswordStrength = ({ password }) => {
   const getStrength = (pwd) => {
     let score = 0;
@@ -79,12 +72,7 @@ const PasswordStrength = ({ password }) => {
     <div className="mt-1">
       <div className="flex gap-1 mb-1">
         {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-              i <= score ? colors[score] : "bg-gray-200"
-            }`}
-          />
+          <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= score ? colors[score] : "bg-gray-200"}`} />
         ))}
       </div>
       <p className={`text-xs font-medium ${textColors[score]}`}>{labels[score]}</p>
@@ -92,6 +80,7 @@ const PasswordStrength = ({ password }) => {
   );
 };
 
+// Main SignUpPage Component
 export default function SignUpPage() {
   const [form, setForm] = useState({
     firstName: "",
@@ -138,20 +127,31 @@ export default function SignUpPage() {
     }
     setErrors({});
     setLoading(true);
-    setTimeout(() => setLoading(false), 2000); // simulate API
+
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(false);
+      alert("Account created successfully!");
+      setForm({
+        firstName: "",
+        lastName: "",
+        birthdate: "",
+        phone: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setAgreedToTerms(false);
+    }, 2000);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 sm:p-6">
       <div className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
-
-        {/* Header */}
         <h2 className="text-2xl font-bold text-gray-900 mb-1">Create Account</h2>
         <p className="text-gray-500 mb-5 text-sm">Fill in the details below to get started</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
-          {/* First & Last Name — side by side on sm+ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <InputField
               label="First Name"
@@ -174,21 +174,18 @@ export default function SignUpPage() {
           </div>
 
           <InputField
-              label={
-                <span>
-                  Birthdate{" "}
-                  <span className="text-gray-400 font-normal">(YYYY-MM-DD)</span>
-                </span>
-              }
-              id="birthdate"
-              type="date"
-              value={form.birthdate}
-              onChange={handleChange("birthdate")}
-              error={errors.birthdate}
-              max={new Date().toISOString().split("T")[0]}
-            />
+            label={
+              <span>
+                Birthdate <span className="text-gray-400 font-normal">(YYYY-MM-DD)</span>
+              </span>
+            }
+            id="birthdate"
+            type="date"
+            value={form.birthdate}
+            onChange={handleChange("birthdate")}
+            max={new Date().toISOString().split("T")[0]}
+          />
 
-          {/* Email */}
           <InputField
             label="Email Address"
             id="email"
@@ -200,12 +197,10 @@ export default function SignUpPage() {
             error={errors.email}
           />
 
-          {/* Phone (optional) */}
           <InputField
             label={
               <span>
-                Contact Number{" "}
-                <span className="text-gray-400 font-normal">(optional)</span>
+                Contact Number <span className="text-gray-400 font-normal">(optional)</span>
               </span>
             }
             id="phone"
@@ -217,7 +212,6 @@ export default function SignUpPage() {
             error={errors.phone}
           />
 
-          {/* Password */}
           <div className="flex flex-col gap-1.5">
             <InputField
               label="Password"
@@ -241,7 +235,6 @@ export default function SignUpPage() {
             <PasswordStrength password={form.password} />
           </div>
 
-          {/* Confirm Password */}
           <InputField
             label="Confirm Password"
             id="confirmPassword"
@@ -262,7 +255,6 @@ export default function SignUpPage() {
             }
           />
 
-          {/* Terms & Conditions */}
           <div className="flex flex-col gap-1">
             <label className="flex items-start gap-2 cursor-pointer">
               <input
@@ -288,32 +280,21 @@ export default function SignUpPage() {
             {errors.terms && <p className="text-xs text-red-500 ml-6">{errors.terms}</p>}
           </div>
 
-          {/* Submit */}
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            fullWidth
-            loading={loading}
-          >
+          <Button type="submit" variant="primary" size="lg" fullWidth loading={loading}>
             Create Account
           </Button>
 
-          {/* Divider */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-gray-200"></div>
             <span className="text-xs text-gray-400">or sign up with</span>
             <div className="flex-1 h-px bg-gray-200"></div>
           </div>
 
-          {/* Google SSO */}
           <Button variant="secondary" fullWidth leftIcon={<span>G</span>}>
             Google
           </Button>
-
         </form>
 
-        {/* Footer */}
         <p className="text-xs text-gray-400 mt-4 text-center">
           Already have an account?{" "}
           <button type="button" className="text-red-600 font-semibold hover:underline">
