@@ -20,10 +20,14 @@ public class UserController {
 
     // REGISTER USER
     @PostMapping("/register")
-    public UserEntity register(@RequestBody UserEntity user) {
-        return userService.register(user);
+    public String register(@RequestBody UserEntity user) {
+        try {
+            userService.register(user);
+            return "User registered successfully!";
+        } catch (RuntimeException e) {
+            return e.getMessage(); // will return "Email already registered"
+        }
     }
-
     // GET ALL USERS
     @GetMapping
     public List<UserEntity> getAll() {
