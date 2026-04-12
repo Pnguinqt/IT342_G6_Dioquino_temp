@@ -18,12 +18,16 @@ public class UserController {
         this.userService = userService;
     }
 
-    // REGISTER USER
-    @PostMapping("/register")
-    public UserEntity register(@RequestBody UserEntity user) {
-        return userService.register(user);
-    }
 
+    @PostMapping("/register")
+    public String register(@RequestBody UserEntity user) {
+        try {
+            userService.register(user);
+            return "User registered successfully!";
+        } catch (RuntimeException e) {
+            return e.getMessage();
+        }
+    }
     // GET ALL USERS
     @GetMapping
     public List<UserEntity> getAll() {
