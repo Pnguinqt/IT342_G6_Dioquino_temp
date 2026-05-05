@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Button from "../components/Button";
 import { registerUser } from "../api/userAPI";
+import { useNavigate } from "react-router-dom";
 
 // Icons
 const MailIcon = () => (
@@ -97,7 +98,7 @@ export default function SignUpPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-
+  
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
     setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -157,6 +158,7 @@ export default function SignUpPage() {
       setLoading(false);
     }
   };
+  const navigate = useNavigate(); 
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 sm:p-6">
@@ -308,9 +310,10 @@ export default function SignUpPage() {
           </Button>
         </form>
 
+      
         <p className="text-xs text-gray-400 mt-4 text-center">
           Already have an account?{" "}
-          <button type="button" className="text-red-600 font-semibold hover:underline">
+          <button type="button" className="text-red-600 font-semibold hover:underline" onClick={() => navigate("/login")}>
             Sign In
           </button>
         </p>

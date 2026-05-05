@@ -1,360 +1,216 @@
-import { useState } from 'react';
-import Button from "../components/Button";
 
-export default function UserProfile() {
-  // Sample user data - replace with actual user data from your backend
-  const [user, setUser] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    age: 28,
-    email: 'john.doe@example.com',
-    contactNumber: '+63 912 345 6789',
-    address: '123 Main Street, Cebu City, Philippines',
-    profileImage: null // Set to image URL when available
+import { useState } from "react";
+import { api } from "../api/apiFetch";
+import {
+  Button, Ic, Skeleton, ErrorState, InfoRow,
+  fullName, formatDate,
+} from "../components/shared";
+
+/* ── Edit Profile Modal — fields match UserEntity ── */
+function EditProfileModal({ user, onClose, onSaved }) {
+  const [form, setForm] = useState({
+    firstName:     user.firstName     ?? "",
+    lastName:      user.lastName      ?? "",
+    email:         user.email         ?? "",
+    contactNumber: user.contactNumber ?? "",
+    address:       user.address       ?? "",
+    birthdate:     user.birthdate     ?? "",  // "YYYY-MM-DD"
   });
+  const [saving, setSaving] = useState(false);
+  const [err,    setErr]    = useState(null);
 
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [editedUser, setEditedUser] = useState({ ...user });
-  const [showChangePassword, setShowChangePassword] = useState(false);
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
+  const set = (key) => (e) => setForm(prev => ({ ...prev, [key]: e.target.value }));
 
-  const handleEditToggle = () => {
-    if (isEditMode) {
-      setEditedUser({ ...user }); // Reset if canceling
-    }
-    setIsEditMode(!isEditMode);
-  };
-
-  const handleSaveChanges = () => {
-    setUser({ ...editedUser });
-    setIsEditMode(false);
-    console.log('Saved user data:', editedUser);
-    // Add your API call here to save changes
-  };
-
-  const handleInputChange = (e) => {
-    setEditedUser({
-      ...editedUser,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handlePasswordChange = (e) => {
-    setPasswordData({
-      ...passwordData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleChangePassword = (e) => {
-    e.preventDefault();
-    
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match!');
-      return;
-    }
-
-    console.log('Change password submitted');
-    // Add your API call here to change password
-    
-    // Reset form
-    setPasswordData({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    });
-    setShowChangePassword(false);
-    alert('Password changed successfully!');
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setEditedUser({
-          ...editedUser,
-          profileImage: reader.result
-        });
-      };
-      reader.readAsDataURL(file);
+  const save = async () => {
+    setSaving(true);
+    setErr(null);
+    try {
+      const updated = await api.updateMe(form);
+      onSaved(updated);
+      onClose();
+    } catch (e) {
+      setErr(e.message);
+      setSaving(false);
     }
   };
+
+  // Matches every writable field in UserEntity
+  const fields = [
+    { label: "First Name",     key: "firstName",     type: "text",  placeholder: "Maria",                 col: 1 },
+    { label: "Last Name",      key: "lastName",      type: "text",  placeholder: "Santos",                col: 1 },
+    { label: "Email Address",  key: "email",         type: "email", placeholder: "maria@example.com",     col: 2 },
+    { label: "Contact Number", key: "contactNumber", type: "tel",   placeholder: "+63 912 345 6789",      col: 1 },
+    { label: "Birthdate",      key: "birthdate",     type: "date",  placeholder: "",                      col: 1 },
+    { label: "Address",        key: "address",       type: "text",  placeholder: "Cebu City, Philippines", col: 2 },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-400 to-red-600 py-8 px-4">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
-        {/* Header Section */}
-        <div className="bg-red-600 h-32"></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.5)" }}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] flex flex-col">
 
-        {/* Profile Content */}
-        <div className="px-8 pb-8">
-          {/* Profile Image */}
-          <div className="relative -mt-16 mb-6">
-            <div className="w-32 h-32 rounded-full border-4 border-white bg-gray-200 overflow-hidden">
-              {(isEditMode ? editedUser.profileImage : user.profileImage) ? (
-                <img 
-                  src={isEditMode ? editedUser.profileImage : user.profileImage} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <h3 className="font-bold text-gray-900">Edit Profile</h3>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition">
+            <Ic.X />
+          </button>
+        </div>
+
+        {/* Form */}
+        <div className="p-5 flex flex-col gap-4 overflow-y-auto">
+          <div className="grid grid-cols-2 gap-3">
+            {fields.map(f => (
+              <div key={f.key} className={f.col === 2 ? "col-span-2" : ""}>
+                <label className="text-xs font-semibold text-gray-600 block mb-1">{f.label}</label>
+                <input
+                  type={f.type}
+                  value={form[f.key]}
+                  placeholder={f.placeholder}
+                  onChange={set(f.key)}
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition"
                 />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                  <svg className="w-16 h-16 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
-            </div>
-            {isEditMode && (
-              <label 
-                htmlFor="profileImage" 
-                className="absolute bottom-0 right-0 bg-red-600 text-white p-2 rounded-full cursor-pointer hover:bg-red-700 transition"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <input 
-                  type="file" 
-                  id="profileImage" 
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-              </label>
-            )}
+              </div>
+            ))}
           </div>
 
-          {/* User Name & Actions */}
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800">
-                {user.firstName} {user.lastName}
-              </h1>
-              <p className="text-gray-600">{user.email}</p>
-            </div>
-            <div className="flex gap-2">
-              {!isEditMode ? (
-                <>
-                  <Button variant="primary" size="md" onClick={handleEditToggle}>
-                    Edit Profile
-                  </Button>
-                  <Button 
-                    variant="secondary" 
-                    size="md" 
-                    onClick={() => setShowChangePassword(!showChangePassword)}
-                  >
-                    Change Password
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="primary" size="md" onClick={handleSaveChanges}>
-                    Save Changes
-                  </Button>
-                  <Button variant="tertiary" size="md" onClick={handleEditToggle}>
-                    Cancel
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* User Information Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* First Name */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                First Name
-              </label>
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="firstName"
-                  value={editedUser.firstName}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              ) : (
-                <p className="text-gray-800 bg-gray-50 px-3 py-2 rounded">{user.firstName}</p>
-              )}
-            </div>
-
-            {/* Last Name */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Last Name
-              </label>
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="lastName"
-                  value={editedUser.lastName}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              ) : (
-                <p className="text-gray-800 bg-gray-50 px-3 py-2 rounded">{user.lastName}</p>
-              )}
-            </div>
-
-            {/* Age */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Age
-              </label>
-              {isEditMode ? (
-                <input
-                  type="number"
-                  name="age"
-                  value={editedUser.age}
-                  onChange={handleInputChange}
-                  min="1"
-                  max="120"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              ) : (
-                <p className="text-gray-800 bg-gray-50 px-3 py-2 rounded">{user.age}</p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Email
-              </label>
-              {isEditMode ? (
-                <input
-                  type="email"
-                  name="email"
-                  value={editedUser.email}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              ) : (
-                <p className="text-gray-800 bg-gray-50 px-3 py-2 rounded">{user.email}</p>
-              )}
-            </div>
-
-            {/* Contact Number */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Contact Number
-              </label>
-              {isEditMode ? (
-                <input
-                  type="tel"
-                  name="contactNumber"
-                  value={editedUser.contactNumber}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              ) : (
-                <p className="text-gray-800 bg-gray-50 px-3 py-2 rounded">{user.contactNumber}</p>
-              )}
-            </div>
-
-            {/* Address */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Address
-              </label>
-              {isEditMode ? (
-                <input
-                  type="text"
-                  name="address"
-                  value={editedUser.address}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              ) : (
-                <p className="text-gray-800 bg-gray-50 px-3 py-2 rounded">{user.address}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Change Password Section */}
-          {showChangePassword && (
-            <div className="border-t pt-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Change Password</h2>
-              <form onSubmit={handleChangePassword} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">
-                      Current Password
-                    </label>
-                    <input
-                      type="password"
-                      name="currentPassword"
-                      value={passwordData.currentPassword}
-                      onChange={handlePasswordChange}
-                      placeholder="Enter current password"
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">
-                      New Password
-                    </label>
-                    <input
-                      type="password"
-                      name="newPassword"
-                      value={passwordData.newPassword}
-                      onChange={handlePasswordChange}
-                      placeholder="Enter new password"
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">
-                      Confirm New Password
-                    </label>
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      value={passwordData.confirmPassword}
-                      onChange={handlePasswordChange}
-                      placeholder="Confirm new password"
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button variant="primary" size="md" type="submit">
-                    Update Password
-                  </Button>
-                  <Button 
-                    variant="tertiary" 
-                    size="md" 
-                    type="button"
-                    onClick={() => {
-                      setShowChangePassword(false);
-                      setPasswordData({
-                        currentPassword: '',
-                        newPassword: '',
-                        confirmPassword: ''
-                      });
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </div>
+          {err && (
+            <p className="text-xs text-red-600 font-semibold bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              {err}
+            </p>
           )}
+
+          <div className="flex gap-2 pt-1">
+            <Button variant="tertiary" size="md" fullWidth onClick={onClose}>Cancel</Button>
+            <Button variant="primary"  size="md" fullWidth loading={saving} onClick={save}>Save Changes</Button>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ── ProfilePage ── */
+export default function ProfilePage({
+  user, userLoading, userError, refetchUser,
+  requests, reqsLoading,
+  onLogout,
+}) {
+  const [editOpen, setEditOpen] = useState(false);
+
+  const requestList   = requests ?? [];
+  const approvedCount = requestList.filter(r => r.status === "approved").length;
+  const pendingCount  = requestList.filter(r => r.status === "pending").length;
+  const displayName   = fullName(user);
+  const displayInitial = displayName !== "—" ? displayName.charAt(0).toUpperCase() : "?";
+
+  if (userLoading) {
+    return (
+      <div className="max-w-md">
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <Skeleton className="h-40 rounded-none" />
+          <div className="p-6 flex flex-col gap-4">
+            {[...Array(5)].map((_,i) => <Skeleton key={i} className="h-12" />)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (userError) {
+    return <ErrorState message={userError} onRetry={refetchUser} />;
+  }
+
+  return (
+    <div className="max-w-md">
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+
+        {/* Red banner header */}
+        <div className="bg-red-600 px-6 pt-8 pb-14">
+          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-red-600 font-extrabold text-2xl shadow-lg">
+            {displayInitial}
+          </div>
+          {/* firstName + lastName from UserEntity */}
+          <h2 className="text-white font-bold text-lg mt-3">{displayName}</h2>
+          <p className="text-white/70 text-xs mt-0.5">{user?.email ?? "—"}</p>
+        </div>
+
+        {/* Email badge overlapping the banner */}
+        <div className="relative px-6 -mt-6 mb-2">
+          <span className="inline-flex items-center gap-1.5 bg-white border-2 border-red-200 text-red-600 text-sm font-extrabold px-3 py-1.5 rounded-xl shadow-sm">
+            <Ic.Mail c="w-4 h-4" /> {user?.email ?? "—"}
+          </span>
+        </div>
+
+        {/* All UserEntity fields displayed as info rows */}
+        <div className="px-6 pb-2">
+          <InfoRow
+            icon={<Ic.User c="w-4 h-4" />}
+            label="Full Name"
+            value={displayName}
+          />
+          <InfoRow
+            icon={<Ic.Mail c="w-4 h-4" />}
+            label="Email"
+            value={user?.email}
+          />
+          <InfoRow
+            icon={<Ic.Phone c="w-4 h-4" />}
+            label="Contact Number"
+            value={user?.contactNumber}
+          />
+          <InfoRow
+            icon={<Ic.Calendar c="w-4 h-4" />}
+            label="Birthdate"
+            value={formatDate(user?.birthdate)}
+          />
+          <InfoRow
+            icon={<Ic.MapPin c="w-4 h-4" />}
+            label="Address"
+            value={user?.address}
+          />
+        </div>
+
+        {/* Request stats mini-dashboard */}
+        <div className="mx-6 mb-5 grid grid-cols-3 gap-3 bg-gray-50 rounded-2xl p-4 border border-gray-100">
+          {[
+            { label: "Total",    value: requestList.length, color: "text-gray-900"   },
+            { label: "Approved", value: approvedCount,       color: "text-green-600"  },
+            { label: "Pending",  value: pendingCount,        color: "text-yellow-600" },
+          ].map(s => (
+            <div key={s.label} className="text-center">
+              <p className={`text-xl font-extrabold ${s.color}`}>
+                {reqsLoading ? "…" : s.value}
+              </p>
+              <p className="text-[11px] text-gray-400 font-medium mt-0.5">{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Actions */}
+        <div className="px-6 py-4 border-t border-gray-100 flex gap-2">
+          <Button
+            variant="primary" size="md" fullWidth
+            onClick={() => setEditOpen(true)}
+            leftIcon={<Ic.Edit c="w-4 h-4" />}>
+            Edit Profile
+          </Button>
+          <Button
+            variant="tertiary" size="md"
+            onClick={onLogout}
+            leftIcon={<Ic.Logout c="w-4 h-4" />}>
+            Logout
+          </Button>
+        </div>
+      </div>
+
+      {/* Edit Profile Modal */}
+      {editOpen && user && (
+        <EditProfileModal
+          user={user}
+          onClose={() => setEditOpen(false)}
+          onSaved={() => { refetchUser(); setEditOpen(false); }}
+        />
+      )}
     </div>
   );
 }

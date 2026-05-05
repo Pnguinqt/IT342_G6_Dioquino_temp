@@ -55,20 +55,50 @@ export default function LoginPage() {
     return errs;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errs = validate();
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const errs = validate();
+  if (Object.keys(errs).length > 0) {
+    setErrors(errs);
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const res = await fetch("http://localhost:8080/api/auth/login", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({  
+        email,
+        password
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      setErrors({ general: err.message });
+      setLoading(false);
       return;
     }
-    setErrors({});
-    setLoading(true);
-    setTimeout(() => {
-          setLoading(false);
-          navigate("/dashboard")
-          },  1500); 
-  };
+
+    const user = await res.json();
+
+    // store logged-in user
+    localStorage.setItem("user", JSON.stringify(user));
+
+    navigate("/dashboard");
+
+  } catch (error) {
+    console.error(error);
+  }
+
+  setLoading(false);
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-5">
@@ -133,7 +163,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-xs text-gray-400 mt-4 text-center">
-          Need an account? <button type="button" className="text-red-600 font-semibold hover:underline">Sign Up</button>
+          Need an account? <button type="button" className="text-red-600 font-semibold hover:underline" onClick={() => navigate("/register")}>Sign Up</button>
         </p>
       </div>
     </div>
