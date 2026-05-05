@@ -1,5 +1,6 @@
 package IT342_G6_Dioquino_Lab1.DugoSugbo.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -21,6 +22,8 @@ public class UserEntity {
 
     private String contactNumber;
     private String address;
+
+    @JsonIgnore
     private String password;
 
     // Constructors
@@ -38,7 +41,7 @@ public class UserEntity {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
+    public long getId() { return id; }
 
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }

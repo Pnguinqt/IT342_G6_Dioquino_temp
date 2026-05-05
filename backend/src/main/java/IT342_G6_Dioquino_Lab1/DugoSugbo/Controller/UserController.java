@@ -1,6 +1,5 @@
 package IT342_G6_Dioquino_Lab1.DugoSugbo.Controller;
 
-
 import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.UserEntity;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.Service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -18,35 +17,42 @@ public class UserController {
         this.userService = userService;
     }
 
-
+    // =========================
+    // REGISTER
+    // =========================
     @PostMapping("/register")
     public String register(@RequestBody UserEntity user) {
-        try {
-            userService.register(user);
-            return "User registered successfully!";
-        } catch (RuntimeException e) {
-            return e.getMessage();
-        }
+        userService.register(user);
+        return "User registered successfully!";
     }
+
+    // =========================
     // GET ALL USERS
+    // =========================
     @GetMapping
     public List<UserEntity> getAll() {
         return userService.getAllUsers();
     }
 
-    // GET USER BY ID
+    // =========================
+    // GET BY ID
+    // =========================
     @GetMapping("/{id}")
     public UserEntity getOne(@PathVariable Long id) {
-        return userService.getById(id);
+        return userService.getUserById(id);
     }
 
+    // =========================
     // UPDATE USER
+    // =========================
     @PutMapping("/{id}")
     public UserEntity update(@PathVariable Long id, @RequestBody UserEntity user) {
-        return userService.update(id, user);
+        return userService.updateUser(id, user);
     }
 
+    // =========================
     // DELETE USER
+    // =========================
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         userService.delete(id);
