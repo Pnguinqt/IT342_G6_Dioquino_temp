@@ -1,6 +1,7 @@
 // src/pages/LoginPage.jsx
 import { useState } from "react";
 import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 // Simple Icons
 const MailIcon = () => (
@@ -43,6 +44,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
+  const navigate = useNavigate();
+
   const validate = () => {
     const errs = {};
     if (!email) errs.email = "Email is required.";
@@ -61,7 +64,10 @@ export default function LoginPage() {
     }
     setErrors({});
     setLoading(true);
-    setTimeout(() => setLoading(false), 2000); // simulate API
+    setTimeout(() => {
+          setLoading(false);
+          navigate("/dashboard")
+          },  1500); 
   };
 
   return (
@@ -127,7 +133,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-xs text-gray-400 mt-4 text-center">
-          Need an account? <button type="button" className="text-red-600 font-semibold hover:underline">Contact Admin</button>
+          Need an account? <button type="button" className="text-red-600 font-semibold hover:underline">Sign Up</button>
         </p>
       </div>
     </div>
