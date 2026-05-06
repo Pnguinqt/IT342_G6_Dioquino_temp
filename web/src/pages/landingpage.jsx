@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 
 
@@ -49,6 +50,7 @@ const HospitalIcon = ({ className = "w-5 h-5" }) => (
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -79,10 +81,15 @@ function Navbar() {
 
         {/* Nav CTA — primary Button */}
         <div className="hidden md:flex items-center gap-2">
-          <Button variant="tertiary" size="md">
+          <Button variant="tertiary" size="md" onClick={() => navigate("/login")}>
             Login
           </Button>
-          <Button variant="primary" size="md" rightIcon={<ArrowRightIcon className="w-3.5 h-3.5" />}>
+          <Button 
+          variant="primary" 
+          size="md" 
+          rightIcon={<ArrowRightIcon className="w-3.5 h-3.5" />}
+          onClick={() => navigate("/register")}
+          >
             Register Now
           </Button>
         </div>

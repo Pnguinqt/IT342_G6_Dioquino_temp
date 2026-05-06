@@ -3,7 +3,7 @@ import LoginPage from "./pages/login.jsx";
 import SignUpPage from "./pages/register.jsx";    
 import UserProfile from "./pages/userprofile.jsx";
 import LandingPage from "./pages/landingpage.jsx";
-import UserDashboard from "./pages/dashboard.jsx";
+import Dashboard from "./pages/dashboard.jsx";
 import './App.css'
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<SignUpPage />} />
         <Route path="/profile" element={<UserProfile />} />
-        <Route path="/dashboard" element={<UserDashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
       </Routes>
     </Router>

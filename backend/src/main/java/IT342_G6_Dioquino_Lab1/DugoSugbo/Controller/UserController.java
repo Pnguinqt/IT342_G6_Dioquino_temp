@@ -1,15 +1,20 @@
 package IT342_G6_Dioquino_Lab1.DugoSugbo.Controller;
 
-
+import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.ChangePasswordDTO;
+import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.LoginRequest;
+import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.UserResponseDTO;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.UserEntity;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class UserController {
 
     private final UserService userService;
@@ -18,37 +23,129 @@ public class UserController {
         this.userService = userService;
     }
 
+    // ───────────────────────── REGISTER ─────────────────────────
 
     @PostMapping("/register")
-    public String register(@RequestBody UserEntity user) {
-        try {
-            userService.register(user);
-            return "User registered successfully!";
-        } catch (RuntimeException e) {
-            return e.getMessage();
-        }
+    public ResponseEntity<?> register(@RequestBody UserEntity user) {
+        System.out.println("PASSWORD RECEIVED: " + user.getPassword());
+        UserEntity savedUser = userService.register(user);
+        return ResponseEntity.ok(mapToResponse(savedUser));
     }
-    // GET ALL USERS
+
+    // ───────────────────────── LOGIN ─────────────────────────
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request,
+                                   HttpServletRequest httpRequest) {
+
+        UserEntity user = userService.login(request.getEmail(), request.getPassword());
+
+        HttpSession session = httpRequest.getSession(true);
+        session.setAttribute("userId", user.getId());
+
+        return ResponseEntity.ok(mapToResponse(user));
+    }
+
+    // ───────────────────────── GET CURRENT USER ─────────────────────────
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("userId") == null) {
+            return ResponseEntity.status(401).body("No active session");
+        }
+
+        long userId = ((Number) session.getAttribute("userId")).longValue();
+
+        UserEntity user = userService.getUserById(userId);
+
+        return ResponseEntity.ok(mapToResponse(user));
+    }
+
+    // ───────────────────────── UPDATE PROFILE ─────────────────────────
+    @PutMapping("/update")
+    public ResponseEntity<?> updateProfile(@RequestBody UserEntity updatedData,
+                                           HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("userId") == null) {
+            return ResponseEntity.status(401).body("No active session");
+        }
+
+        long userId = ((Number) session.getAttribute("userId")).longValue();
+
+        UserEntity updatedUser = userService.updateUserProfile(userId, updatedData);
+
+        return ResponseEntity.ok(mapToResponse(updatedUser));
+    }
+
+    // ───────────────────────── CHANGE PASSWORD ─────────────────────────
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO request,
+                                            HttpServletRequest httpRequest) {
+
+        HttpSession session = httpRequest.getSession(false);
+
+        if (session == null || session.getAttribute("userId") == null) {
+            return ResponseEntity.status(401).body("No active session");
+        }
+
+        long userId = ((Number) session.getAttribute("userId")).longValue();
+
+        boolean success = userService.changePassword(
+                userId,
+                request.getCurrentPassword(),
+                request.getNewPassword()
+        );
+
+        if (!success) {
+            return ResponseEntity.status(400).body("Current password is incorrect");
+        }
+
+        return ResponseEntity.ok("Password updated successfully");
+    }
+
+    // ───────────────────────── LOGOUT ─────────────────────────
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
+    // ───────────────────────── CRUD (OPTIONAL ADMIN USE) ─────────────────────────
+
     @GetMapping
     public List<UserEntity> getAll() {
         return userService.getAllUsers();
     }
 
-    // GET USER BY ID
     @GetMapping("/{id}")
     public UserEntity getOne(@PathVariable Long id) {
-        return userService.getById(id);
+        return userService.getUserById(id);
     }
 
-    // UPDATE USER
-    @PutMapping("/{id}")
-    public UserEntity update(@PathVariable Long id, @RequestBody UserEntity user) {
-        return userService.update(id, user);
-    }
-
-    // DELETE USER
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         userService.delete(id);
+    }
+
+    // ───────────────────────── MAPPER ─────────────────────────
+    private UserResponseDTO mapToResponse(UserEntity user) {
+        return new UserResponseDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getBirthdate(),
+                user.getContactNumber(),
+                user.getAddress()
+        );
     }
 }

@@ -22,29 +22,80 @@ public class UserService {
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email already registered");
         }
-        return userRepository.save(user);
+
+        return userRepository.save(user); // password stored as plain text
     }
+
+    public UserEntity getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    }
+
+
 
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public UserEntity getById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+    public UserEntity updateUser(Long id, UserEntity updatedUser) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setEmail(updatedUser.getEmail());
+        user.setContactNumber(updatedUser.getContactNumber());
+        user.setAddress(updatedUser.getAddress());
+        user.setBirthdate(updatedUser.getBirthdate());
+
+        return userRepository.save(user);
     }
 
-    public UserEntity update(Long id, UserEntity user) {
-        UserEntity existingUser = getById(id);
-        existingUser.setFirstName(user.getFirstName());
-        existingUser.setLastName(user.getLastName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setContactNumber(user.getContactNumber());
-        existingUser.setPassword(user.getPassword());
-        return userRepository.save(existingUser);
+    public UserEntity login(String email, String password){
+
+         UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("Invalid credentials");
+        }
+        return user;
+    }
+
+    public UserEntity updateUserProfile(long userId, UserEntity data) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setFirstName(data.getFirstName());
+        user.setLastName(data.getLastName());
+        user.setEmail(data.getEmail());
+        user.setBirthdate(data.getBirthdate());
+        user.setContactNumber(data.getContactNumber());
+        user.setAddress(data.getAddress());
+
+        return userRepository.save(user);
+    }
+
+    public boolean changePassword(long userId, String currentPassword, String newPassword) {
+
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!user.getPassword().equals(currentPassword)) {
+            return false;
+        }
+
+        user.setPassword(newPassword);
+        userRepository.save(user);
+
+        return true;
     }
 
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
 }
+
+

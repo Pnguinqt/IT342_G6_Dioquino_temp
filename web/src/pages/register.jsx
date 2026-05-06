@@ -1,7 +1,8 @@
 
 import { useState } from "react";
 import Button from "../components/Button";
-import { registerUser } from "../api/userAPI";
+import { api } from "../api/apiFetch"; 
+import { useNavigate } from "react-router-dom";
 
 // Icons
 const MailIcon = () => (
@@ -13,6 +14,27 @@ const MailIcon = () => (
 const LockIcon = () => (
   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+  </svg>
+);
+
+const MapPinIcon = () => (
+  <svg
+    className="w-5 h-5"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19.5 10.5c0 7.5-7.5 11.25-7.5 11.25S4.5 18 4.5 10.5a7.5 7.5 0 1115 0z"
+    />
   </svg>
 );
 
@@ -89,6 +111,7 @@ export default function SignUpPage() {
     birthdate: "",
     phone: "",
     email: "",
+    address: "",
     password: "",
     confirmPassword: "",
   });
@@ -97,7 +120,7 @@ export default function SignUpPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-
+  
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
     setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -135,11 +158,12 @@ export default function SignUpPage() {
         lastName: form.lastName,
         birthdate: form.birthdate,
         email: form.email,
+        address: form.address,
         contactNumber: form.phone,
         password: form.password,
-        address: "" // Optional field, set to empty if not collected
+
       };
-      await registerUser(userData);
+      await api.register(userData);
       alert("Account created successfully!");
       setForm({
         firstName: "",
@@ -147,6 +171,7 @@ export default function SignUpPage() {
         birthdate: "",
         phone: "",
         email: "",
+        address: "",
         password: "",
         confirmPassword: "",
       });
@@ -157,6 +182,7 @@ export default function SignUpPage() {
       setLoading(false);
     }
   };
+  const navigate = useNavigate(); 
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 sm:p-6">
@@ -208,6 +234,16 @@ export default function SignUpPage() {
             onChange={handleChange("email")}
             icon={<MailIcon />}
             error={errors.email}
+          />
+
+          <InputField
+            label="Address"
+            id="address"
+            placeholder="123 Main St, City, Country"
+            value={form.address}
+            onChange={handleChange("address")}
+            icon={<MapPinIcon />}
+            error={errors.address}
           />
 
           <InputField
@@ -308,9 +344,10 @@ export default function SignUpPage() {
           </Button>
         </form>
 
+      
         <p className="text-xs text-gray-400 mt-4 text-center">
           Already have an account?{" "}
-          <button type="button" className="text-red-600 font-semibold hover:underline">
+          <button type="button" className="text-red-600 font-semibold hover:underline" onClick={() => navigate("/login")}>
             Sign In
           </button>
         </p>
