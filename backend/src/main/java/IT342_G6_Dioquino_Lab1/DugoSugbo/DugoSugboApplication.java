@@ -9,5 +9,5 @@ public class DugoSugboApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DugoSugboApplication.class, args);
 	}
-
+	
 }

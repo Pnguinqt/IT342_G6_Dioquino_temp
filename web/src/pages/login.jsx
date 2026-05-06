@@ -67,7 +67,7 @@ export default function LoginPage() {
   setLoading(true);
 
   try {
-    const res = await fetch("http://localhost:8080/api/auth/login", {
+    const res = await fetch("http://localhost:8080/api/users/login", {
       method: "POST",
       credentials: "include",
       headers: {

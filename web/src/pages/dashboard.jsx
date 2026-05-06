@@ -1,5 +1,6 @@
   import React, { useState, useEffect } from "react";
   import { api } from "../api/apiFetch";
+  import ProfilePage from "./userprofile";
 
   // ── Color tokens ──────────────────────────────────────────────────────────────
   // Primary : red-600 (#dc2626), red-700 (#b91c1c), red-300 (#fca5a5)
@@ -387,12 +388,29 @@
   
           {/* Page content */}
           <main className="flex-1 overflow-y-auto bg-gray-50 pb-16 md:pb-0">
-            {activePage === "dashboard" ? (
-              <DashboardPage onNavigate={navigate} />
-            ) : (
-              <PlaceholderPage title={pageTitle} />
-            )}
-          </main>
+  {activePage === "dashboard" ? (
+    <DashboardPage onNavigate={navigate} />
+  ) : activePage === "profile" ? (
+    <ProfilePage
+      user={user}
+      userLoading={!user}
+      userError={null}
+      refetchUser={async () => {
+        try {
+          const data = await api.getMe();
+          setUser(data);
+        } catch (err) {
+          console.error(err);
+        }
+      }}
+      requests={[]}
+      reqsLoading={false}
+      onLogout={() => console.log("logout")}
+      />
+      ) : (
+      <PlaceholderPage title={pageTitle} />
+      )}
+      </main>
         </div>
   
         {/* Mobile bottom nav */}

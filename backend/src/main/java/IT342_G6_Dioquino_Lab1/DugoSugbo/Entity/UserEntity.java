@@ -1,6 +1,6 @@
 package IT342_G6_Dioquino_Lab1.DugoSugbo.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -23,7 +23,7 @@ public class UserEntity {
     private String contactNumber;
     private String address;
 
-    @JsonIgnore
+
     private String password;
 
     // Constructors

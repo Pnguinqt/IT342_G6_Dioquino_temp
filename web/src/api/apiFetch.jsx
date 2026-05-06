@@ -7,7 +7,7 @@ const BASE_URL =
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, {
     method: options.method || "GET",
-    credentials: "include", // REQUIRED for session cookies
+    credentials: "include", // 🔥 REQUIRED
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),
@@ -16,53 +16,52 @@ async function apiFetch(path, options = {}) {
   });
 
   const contentType = res.headers.get("content-type");
-  const isJson = contentType && contentType.includes("application/json");
 
-  const data = isJson ? await res.json() : await res.text();
+  let data;
+  if (contentType && contentType.includes("application/json")) {
+    data = await res.json();
+  } else {
+    data = await res.text();
+  }
 
   if (!res.ok) {
-    const message =
-      (data && data.message) || `Request failed (${res.status})`;
-    throw new Error(message);
+    throw new Error(
+      typeof data === "string"
+        ? data
+        : data?.message || "Request failed"
+    );
   }
 
   return data;
 }
 
 /**
- * API WRAPPER (your app endpoints)
+ * API WRAPPER
  */
 export const api = {
-  // AUTH
-  getMe: () => apiFetch("/auth/me"),
-
   login: (data) =>
-    apiFetch("/auth/login", {
-      method: "POST",
-      body: data,
-    }),
+  apiFetch("/users/login", {
+    method: "POST",
+    body: data,
+    credentials: "include",
+  }),
+  register: (data) =>
+    apiFetch("/users/register", { method: "POST", body: data }),
+
+  getMe: () =>
+    apiFetch("/users/me"),
+
+  updateMe: (data) =>
+    apiFetch("/users/update", { method: "PUT", body: data }),
+
+  changePassword: (data) =>
+    apiFetch("/users/change-password", { method: "PUT", body: data }),
 
   logout: () =>
-    apiFetch("/auth/logout", {
-      method: "POST",
-    }),
+    apiFetch("/users/logout", { method: "POST" }),
 
-  // HOSPITALS
-  getHospitals: () => apiFetch("/hospitals"),
-
-  // REQUESTS
-  getRequests: (userId) =>
-    apiFetch(
-      `/requests${
-        userId ? `?userId=${encodeURIComponent(userId)}` : ""
-      }`
-    ),
-
-  submitRequest: (data) =>
-    apiFetch("/requests", {
-      method: "POST",
-      body: data,
-    }),
+  getAllUsers: () =>
+    apiFetch("/users"),
 };
 
 export default apiFetch;

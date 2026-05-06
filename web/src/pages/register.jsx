@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import Button from "../components/Button";
-import { registerUser } from "../api/userAPI";
+import { api } from "../api/apiFetch"; 
 import { useNavigate } from "react-router-dom";
 
 // Icons
@@ -14,6 +14,27 @@ const MailIcon = () => (
 const LockIcon = () => (
   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+  </svg>
+);
+
+const MapPinIcon = () => (
+  <svg
+    className="w-5 h-5"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19.5 10.5c0 7.5-7.5 11.25-7.5 11.25S4.5 18 4.5 10.5a7.5 7.5 0 1115 0z"
+    />
   </svg>
 );
 
@@ -90,6 +111,7 @@ export default function SignUpPage() {
     birthdate: "",
     phone: "",
     email: "",
+    address: "",
     password: "",
     confirmPassword: "",
   });
@@ -136,11 +158,12 @@ export default function SignUpPage() {
         lastName: form.lastName,
         birthdate: form.birthdate,
         email: form.email,
+        address: form.address,
         contactNumber: form.phone,
         password: form.password,
-        address: "" // Optional field, set to empty if not collected
+
       };
-      await registerUser(userData);
+      await api.register(userData);
       alert("Account created successfully!");
       setForm({
         firstName: "",
@@ -148,6 +171,7 @@ export default function SignUpPage() {
         birthdate: "",
         phone: "",
         email: "",
+        address: "",
         password: "",
         confirmPassword: "",
       });
@@ -210,6 +234,16 @@ export default function SignUpPage() {
             onChange={handleChange("email")}
             icon={<MailIcon />}
             error={errors.email}
+          />
+
+          <InputField
+            label="Address"
+            id="address"
+            placeholder="123 Main St, City, Country"
+            value={form.address}
+            onChange={handleChange("address")}
+            icon={<MapPinIcon />}
+            error={errors.address}
           />
 
           <InputField
