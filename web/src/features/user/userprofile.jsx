@@ -16,7 +16,7 @@
 
 import { useState, useEffect } from "react";
 import {api} from "../api/apiFetch";
-import { fullName, formatDate } from "../components/shared";
+import { fullName, formatDate } from "../shared/shared";
 import { useNavigate } from "react-router-dom";
 
 /* ─────────────────────────────────────────────────────────────────────────

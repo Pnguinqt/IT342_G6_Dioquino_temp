@@ -1,13 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/login.jsx";
-import SignUpPage from "./pages/register.jsx";    
-import UserProfile from "./pages/userprofile.jsx";
+import LoginPage from "./features/user/login.jsx";
+import SignUpPage from "./features/user/register.jsx";    
+import UserProfile from "./features/user/userprofile.jsx";
 import LandingPage from "./pages/landingpage.jsx";
+<<<<<<< HEAD
 import Dashboard from "./pages/dashboard.jsx";
 import HospitalDashboard from "./pages/hospital.jsx"
 import HospitalRegister from "./pages/hospitalregister.jsx";
 import Admin from "./pages/admin.jsx";
 import AdminLogin from "./pages/adminlogin.jsx";
+=======
+import Dashboard from "./features/user/dashboard.jsx";
+>>>>>>> vertical-slices/frontend
 import './App.css'
 
 function App() {
