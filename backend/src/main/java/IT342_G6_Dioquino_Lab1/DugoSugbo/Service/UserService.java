@@ -3,6 +3,7 @@ package IT342_G6_Dioquino_Lab1.DugoSugbo.Service;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.UserEntity;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.Repository.UserRepository;
 import org.springframework.stereotype.Service;
+import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.Role;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +19,18 @@ public class UserService {
 
     // Register user with email check
     public UserEntity register(UserEntity user) {
+
         Optional<UserEntity> existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email already registered");
         }
 
-        return userRepository.save(user); // password stored as plain text
+        // FORCE DEFAULT ROLE
+        if (user.getRole() == null) {
+            user.setRole(Role.USER);
+        }
+
+        return userRepository.save(user);
     }
 
     public UserEntity getUserById(Long id) {

@@ -1,10 +1,6 @@
 package IT342_G6_Dioquino_Lab1.DugoSugbo.Entity;
 
-import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.RequestStatus;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.UrgencyLevel;
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,141 +11,54 @@ public class BloodRequestEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ─── REQUEST DETAILS ─────────────────────
     private String bloodType;
-    private int units;
-    private String purpose;
+    private int unitsNeeded;
+    private String reason;
 
-    @Enumerated(EnumType.STRING)
-    private UrgencyLevel urgency;
+    private String urgencyLevel;
+    // LOW, MEDIUM, HIGH, CRITICAL
 
-    @Enumerated(EnumType.STRING)
-    private RequestStatus status = RequestStatus.PENDING;
+    private String status = "PENDING";
+    // PENDING, APPROVED, REJECTED, COMPLETED
 
-    private LocalDateTime createdAt;
+    private LocalDateTime requestedAt = LocalDateTime.now();
 
-    private String fullName;
-    private LocalDate birthdate;
-    private String address;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
+    // ─── RELATIONSHIPS ───────────────────────
     @ManyToOne
     @JoinColumn(name = "hospital_id")
     private HospitalEntity hospital;
 
-    @OneToOne(mappedBy = "request", cascade = CascadeType.ALL)
-    private RequestDocumentEntity document;
+    @ManyToOne
+    @JoinColumn(name = "requested_by")
+    private UserEntity requestedBy;
 
-    // ✅ AUTO SET CREATED AT
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
+    public BloodRequestEntity() {}
 
-    // GETTERS & SETTERS (important for Spring)
-    // generate them or use Lombok @Getter @Setter
+    // getters and setters
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public String getBloodType() {
-        return bloodType;
-    }
+    public String getBloodType() { return bloodType; }
+    public void setBloodType(String bloodType) { this.bloodType = bloodType; }
 
-    public void setBloodType(String bloodType) {
-        this.bloodType = bloodType;
-    }
+    public int getUnitsNeeded() { return unitsNeeded; }
+    public void setUnitsNeeded(int unitsNeeded) { this.unitsNeeded = unitsNeeded; }
 
-    public int getUnits() {
-        return units;
-    }
+    public String getReason() { return reason; }
+    public void setReason(String reason) { this.reason = reason; }
 
-    public void setUnits(int units) {
-        this.units = units;
-    }
+    public String getUrgencyLevel() { return urgencyLevel; }
+    public void setUrgencyLevel(String urgencyLevel) { this.urgencyLevel = urgencyLevel; }
 
-    public String getPurpose() {
-        return purpose;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
-    }
+    public LocalDateTime getRequestedAt() { return requestedAt; }
 
-    public UrgencyLevel getUrgency() {
-        return urgency;
-    }
+    public HospitalEntity getHospital() { return hospital; }
+    public void setHospital(HospitalEntity hospital) { this.hospital = hospital; }
 
-    public void setUrgency(UrgencyLevel urgency) {
-        this.urgency = urgency;
-    }
-
-    public RequestStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RequestStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public LocalDate getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = birthdate;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public HospitalEntity getHospital() {
-        return hospital;
-    }
-
-    public void setHospital(HospitalEntity hospital) {
-        this.hospital = hospital;
-    }
-
-    public RequestDocumentEntity getDocument() {
-        return document;
-    }
-
-    public void setDocument(RequestDocumentEntity document) {
-        this.document = document;
-    }
-
-
+    public UserEntity getRequestedBy() { return requestedBy; }
+    public void setRequestedBy(UserEntity requestedBy) { this.requestedBy = requestedBy; }
 }

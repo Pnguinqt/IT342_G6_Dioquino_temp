@@ -1,6 +1,6 @@
 package IT342_G6_Dioquino_Lab1.DugoSugbo.DTO;
 
-
+import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.Role;
 import java.time.LocalDate;
 
 public class UserResponseDTO {
@@ -13,18 +13,22 @@ public class UserResponseDTO {
     private String contactNumber;
     private String address;
 
-    // Empty constructor (required for frameworks like Spring)
+    // NEW FIELD
+    private Role role;
+
+    // Empty constructor
     public UserResponseDTO() {
     }
 
-    // Full constructor
+    // Updated constructor (WITH ROLE)
     public UserResponseDTO(Long id,
-                        String firstName,
-                        String lastName,
-                        String email,
-                        LocalDate birthdate,
-                        String contactNumber,
-                        String address) {
+                           String firstName,
+                           String lastName,
+                           String email,
+                           LocalDate birthdate,
+                           String contactNumber,
+                           String address,
+                           Role role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -32,9 +36,10 @@ public class UserResponseDTO {
         this.birthdate = birthdate;
         this.contactNumber = contactNumber;
         this.address = address;
+        this.role = role;
     }
 
-    // ───────────────────────── GETTERS ─────────────────────────
+    // ───────────────── GETTERS ─────────────────
 
     public Long getId() {
         return id;
@@ -64,7 +69,11 @@ public class UserResponseDTO {
         return address;
     }
 
-    // ───────────────────────── SETTERS ─────────────────────────
+    public Role getRole() {
+        return role;
+    }
+
+    // ───────────────── SETTERS ─────────────────
 
     public void setId(Long id) {
         this.id = id;
@@ -92,5 +101,9 @@ public class UserResponseDTO {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

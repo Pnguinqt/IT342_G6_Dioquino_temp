@@ -145,7 +145,8 @@ public class UserController {
                 user.getEmail(),
                 user.getBirthdate(),
                 user.getContactNumber(),
-                user.getAddress()
+                user.getAddress(),
+                user.getRole()
         );
     }
 }

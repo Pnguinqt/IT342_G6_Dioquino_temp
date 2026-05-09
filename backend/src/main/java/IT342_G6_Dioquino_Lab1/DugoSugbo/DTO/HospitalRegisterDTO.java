@@ -1,52 +1,31 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Entity;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.DTO;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+public class HospitalRegisterDTO {
 
-@Entity
-@Table(name = "hospital_clinic")
-public class HospitalEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    // BASIC INFO
     private String name;
     private String address;
     private String city;
     private String province;
 
-    // CONTACT
     private String contactNumber;
     private String email;
     private String website;
 
-    // DETAILS
     private String hospitalType;
     private String classification;
+
     private String licenseNumber;
     private String accreditationBody;
 
-    // OPERATIONS
     private String operatingHours;
+
     private boolean emergencyServices;
     private boolean bloodBankAvailable;
 
-    // STATUS
-    private boolean verified = false;
-    private String verificationStatus = "PENDING";
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    // RELATION (optional later)
-    @OneToOne
-    @JoinColumn(name = "admin_id")
-    private UserEntity admin;
+    // optional login link (if needed)
+    private String password;
 
     // GETTERS & SETTERS
-
-    public Long getId() { return id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -90,14 +69,6 @@ public class HospitalEntity {
     public boolean isBloodBankAvailable() { return bloodBankAvailable; }
     public void setBloodBankAvailable(boolean bloodBankAvailable) { this.bloodBankAvailable = bloodBankAvailable; }
 
-    public boolean isVerified() { return verified; }
-    public void setVerified(boolean verified) { this.verified = verified; }
-
-    public String getVerificationStatus() { return verificationStatus; }
-    public void setVerificationStatus(String verificationStatus) { this.verificationStatus = verificationStatus; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-
-    public UserEntity getAdmin() { return admin; }
-    public void setAdmin(UserEntity admin) { this.admin = admin; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }
