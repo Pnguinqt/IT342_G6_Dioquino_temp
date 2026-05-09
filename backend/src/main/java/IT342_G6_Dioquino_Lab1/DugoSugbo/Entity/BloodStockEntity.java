@@ -1,6 +1,7 @@
 package IT342_G6_Dioquino_Lab1.DugoSugbo.Entity;
 
 import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.StockStatus;
+import IT342_G6_Dioquino_Lab1.DugoSugbo.features.hospital.HospitalEntity;
 import jakarta.persistence.*;
 
 @Entity

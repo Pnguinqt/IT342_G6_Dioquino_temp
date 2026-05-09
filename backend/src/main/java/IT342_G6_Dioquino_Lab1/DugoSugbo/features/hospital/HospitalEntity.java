@@ -1,7 +1,10 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Entity;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.hospital;
 
+import IT342_G6_Dioquino_Lab1.DugoSugbo.features.bloodrequest.BloodRequestEntity;
+import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.BloodStockEntity;
+import IT342_G6_Dioquino_Lab1.DugoSugbo.features.users.UserEntity;
 import jakarta.persistence.*;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.List;
 

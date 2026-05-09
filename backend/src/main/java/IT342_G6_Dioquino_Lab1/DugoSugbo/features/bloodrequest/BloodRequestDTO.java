@@ -1,7 +1,6 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.DTO;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.bloodrequest;
 
 import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.UrgencyLevel;
-import org.springframework.web.multipart.MultipartFile;
 
 
 public class BloodRequestDTO {

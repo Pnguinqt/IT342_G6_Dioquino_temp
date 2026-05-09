@@ -1,8 +1,5 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Service;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.bloodrequest;
 
-import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.BloodRequestDTO;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.BloodRequestEntity;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Repository.BloodRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

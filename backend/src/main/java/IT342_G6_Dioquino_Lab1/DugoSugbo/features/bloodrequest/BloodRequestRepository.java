@@ -1,7 +1,6 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Repository;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.bloodrequest;
 
 
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.BloodRequestEntity;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.RequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 

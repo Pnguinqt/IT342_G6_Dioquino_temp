@@ -1,8 +1,5 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Controller;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.hospital;
 
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.UserEntity;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Service.HospitalService;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.HospitalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

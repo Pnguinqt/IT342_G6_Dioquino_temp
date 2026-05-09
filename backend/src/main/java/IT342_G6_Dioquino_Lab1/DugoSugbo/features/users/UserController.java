@@ -1,10 +1,7 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Controller;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.users;
 
 import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.ChangePasswordDTO;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.LoginRequest;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.UserResponseDTO;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.UserEntity;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;

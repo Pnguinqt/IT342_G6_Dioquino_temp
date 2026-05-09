@@ -1,8 +1,7 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Repository;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.users;
 
 
 
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

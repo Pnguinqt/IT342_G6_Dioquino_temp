@@ -1,17 +1,13 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Service;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.hospital;
 
-import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.HospitalDTO;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.StockStatus;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.HospitalEntity;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.StockDTO;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Repository.HospitalRepository;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.BloodStockEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class HospitalService {

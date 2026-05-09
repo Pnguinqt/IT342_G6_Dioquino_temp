@@ -1,7 +1,10 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Entity;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.bloodrequest;
 
 import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.RequestStatus;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.UrgencyLevel;
+import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.RequestDocumentEntity;
+import IT342_G6_Dioquino_Lab1.DugoSugbo.features.hospital.HospitalEntity;
+import IT342_G6_Dioquino_Lab1.DugoSugbo.features.users.UserEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
