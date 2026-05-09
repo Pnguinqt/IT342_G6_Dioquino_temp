@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import Button from "../components/Button";
+import Button from "../shared/Button";
 import { api } from "../api/apiFetch"; 
 import { useNavigate } from "react-router-dom";
 

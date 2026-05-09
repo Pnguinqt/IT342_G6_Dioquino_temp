@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Button";
+import Button from "../features/shared/Button";
 
 
 

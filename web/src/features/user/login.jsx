@@ -1,6 +1,6 @@
 // src/pages/LoginPage.jsx
 import { useState } from "react";
-import Button from "../components/Button";
+import Button from "../shared/Button";
 import { useNavigate } from "react-router-dom";
 
 // Simple Icons

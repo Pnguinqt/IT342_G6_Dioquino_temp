@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/login.jsx";
-import SignUpPage from "./pages/register.jsx";    
-import UserProfile from "./pages/userprofile.jsx";
+import LoginPage from "./features/user/login.jsx";
+import SignUpPage from "./features/user/register.jsx";    
+import UserProfile from "./features/user/userprofile.jsx";
 import LandingPage from "./pages/landingpage.jsx";
-import Dashboard from "./pages/dashboard.jsx";
+import Dashboard from "./features/user/dashboard.jsx";
 import './App.css'
 
 function App() {
