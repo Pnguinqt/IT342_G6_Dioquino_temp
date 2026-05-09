@@ -1,5 +1,6 @@
 package IT342_G6_Dioquino_Lab1.DugoSugbo.Entity;
 
+import IT342_G6_Dioquino_Lab1.DugoSugbo.features.bloodrequest.BloodRequestEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

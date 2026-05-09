@@ -1,4 +1,4 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.DTO;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.users;
 
 import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.Role;
 import java.time.LocalDate;

@@ -1,7 +1,5 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Service;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.users;
 
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Entity.UserEntity;
-import IT342_G6_Dioquino_Lab1.DugoSugbo.Repository.UserRepository;
 import org.springframework.stereotype.Service;
 import IT342_G6_Dioquino_Lab1.DugoSugbo.ENUM.Role;
 

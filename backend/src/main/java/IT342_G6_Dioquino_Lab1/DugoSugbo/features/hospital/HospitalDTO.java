@@ -1,4 +1,6 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.DTO;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.hospital;
+
+import IT342_G6_Dioquino_Lab1.DugoSugbo.DTO.StockDTO;
 
 import java.util.List;
 

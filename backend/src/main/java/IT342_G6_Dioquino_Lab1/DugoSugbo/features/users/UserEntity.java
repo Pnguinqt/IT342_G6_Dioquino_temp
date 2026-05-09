@@ -1,4 +1,4 @@
-package IT342_G6_Dioquino_Lab1.DugoSugbo.Entity;
+package IT342_G6_Dioquino_Lab1.DugoSugbo.features.users;
 
 
 import jakarta.persistence.*;
